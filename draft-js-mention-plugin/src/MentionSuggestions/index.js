@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { genKey } from 'draft-js';
+import { genKey, EditorState } from 'draft-js';
 import { List, fromJS } from 'immutable';
 import escapeRegExp from 'lodash.escaperegexp';
 import Entry from './Entry';
@@ -240,13 +240,21 @@ export class MentionSuggestions extends Component {
       return;
     }
 
-    if (this.props.onAddMention) {
-      this.props.onAddMention(mention);
-    }
+    const editorState = (() => {
+      const original = this.props.store.getEditorState();
+      if (!this.props.onAddMention) {
+        return original;
+      }
+      const possibleNewState = this.props.onAddMention(mention, original);
+      if (possibleNewState instanceof EditorState) {
+        return possibleNewState;
+      }
+      return original;
+    })();
 
     this.closeDropdown();
     const newEditorState = addMention(
-      this.props.store.getEditorState(),
+      editorState,
       mention,
       this.props.mentionPrefix,
       this.props.mentionTrigger,

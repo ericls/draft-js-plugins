@@ -197,7 +197,12 @@ export default class App extends Component {
             </div>
             <div className={styles.param}>
               <span className={styles.paramName}>onAddMention</span>
-              <span>A callback which is triggered whenever the mention is about to be added. The first argument of this callback will contain the mention entry.</span>
+              <span>
+                A callback which is triggered whenever the mention is about to be added.
+                Used to pre-process editorState and/or do other side effects.
+                <br />
+                <InlineCode code="(mention: Map, editotState: EditotState) => EditorState | void" />
+              </span>
             </div>
             <div className={styles.param}>
               <span className={styles.paramName}>popoverComponent</span>
